@@ -1,3 +1,8 @@
 Rails.application.routes.draw do
-  post 'auth/login', to: 'auth#login'
+  resources :auth do
+    collection do
+      post :sign_in
+      post :sign_up
+    end
+  end
 end

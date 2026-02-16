@@ -19,6 +19,9 @@ gem 'bcrypt', '~> 3.1.7'
 # To use token for authenticate users
 gem 'jwt'
 
+# Serializers
+gem 'active_model_serializers'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 

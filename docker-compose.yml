@@ -32,6 +32,8 @@ services:
     depends_on:
       - postgres
       - auth_service
+    volumes:
+      - ./manager:/app
   
   # It'll have the port 3001
   auth_service:
@@ -47,6 +49,8 @@ services:
       - '3001:3001'
     depends_on:
       - postgres
+    volumes:
+      - ./auth_service:/app
 
 volumes:
   postgres_data:

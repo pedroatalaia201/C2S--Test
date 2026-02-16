@@ -1,12 +1,26 @@
 class AuthController < ApplicationController
-  skip_before_action :authorize_request, only: %i[login]
+  skip_before_action :authorize_request, only: %i[sign_up sign_in]
 
-  def login
-    user = User.find_by(email: login_params[:email])
+  # POST /auth/sign_up
+  def sign_up
+    user = User.new(**user_params)
+
+    if user.save
+      render json: user, serializer: SimpleUserSerializer
+    else
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  # POST /auth/sign_in
+  def sign_in
+    user = User.find_by(email: user_params[:email])
   
-    if user&.authenticate(login_params[:password])
+    if user&.authenticate(user_params[:password])
       token = JsonWebToken.encode(user_id: user.id)
-      render json: { token: token }, status: :ok
+
+      render json: user, token: token, exp_in: 60.minutes.from_now.to_i,
+      serializer: UserWithTokenSerializer, status: :ok
     else
       render json: { error: 'Invalid email or password' }, status: :unauthorized
     end
@@ -14,7 +28,8 @@ class AuthController < ApplicationController
 
   private
 
-  def login_params
-    params.permit(:email, :password)
+  # It'll be used for both sign_up and sign_in
+  def user_params
+    params.permit(:name, :email, :password)
   end
 end
