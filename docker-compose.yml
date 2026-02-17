@@ -27,6 +27,7 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       RAILS_ENV: development
+      AUTH_SERVICE_URL: http://auth_service:3001
     ports:
       - '3000:3000'
     depends_on:

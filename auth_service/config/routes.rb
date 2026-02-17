@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     collection do
       post :sign_in
       post :sign_up
-      post :verify
+      get  :verify
     end
   end
 end
