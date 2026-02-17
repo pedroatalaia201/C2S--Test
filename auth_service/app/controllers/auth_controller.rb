@@ -20,10 +20,16 @@ class AuthController < ApplicationController
       token = JsonWebToken.encode(user_id: user.id)
 
       render json: user, token: token, exp_in: 60.minutes.from_now.to_i,
-      serializer: UserWithTokenSerializer, status: :ok
+      serializer: UserWithExpTokenSerializer, status: :ok
     else
       render json: { error: 'Invalid email or password' }, status: :unauthorized
     end
+  end
+
+  # POST /auth/verify
+  def verify
+    # If the token expire the :authorize_request will deal with that.
+    render json: @current_user, serializer: SimpleUserSerializer
   end
 
   private
