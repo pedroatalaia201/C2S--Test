@@ -198,8 +198,14 @@ DELETE http://localhost:3002/notifications/:id
 <br><br>
 ---
 
+## Note on Web Scraping
+#### The <a href='https://www.webmotors.com.br'>WebMotors</a> uses anti-bot protection, ```captcha```, which cause the scraping requests to return HTTP with status 403.
+#### This behavior is handled by:
+- **updating task status to ```"failed"```**.
+- **storing the error_message**
+- **sending a notification event**
 
-
+#### The async pipeline and architecture remain fully functional.
 
 
 
