@@ -16,8 +16,8 @@ class WebScrapingJob
       task.update(status: 'done', collected_data: data)
       notify_completed_task(task: task, collected_data: data)
     rescue StandardError => e
-      notify_failed_task(task: task)
-      task.update(status: 'failed', error_message: e)
+      task.update(status: 'failed', error_message: e.message)
+      notify_failed_task(task: task, error_message: e.message)
     end
   end
 
@@ -55,9 +55,10 @@ class WebScrapingJob
     )
   end
 
-  def notify_failed_task(task:)
+  def notify_failed_task(task:, error_message:)
     NotificationServiceClient.new.create(
-      task_id: task.id, event_type: 'task_failed', collected_data: nil,
+      task_id: task.id, event_type: 'task_failed',
+      collected_data: { error_message: error_message },
       user_id: task.created_by_user_id, user_email: task.created_by_user_email
     )
   end
