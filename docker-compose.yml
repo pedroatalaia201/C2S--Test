@@ -28,11 +28,30 @@ services:
       DB_PASSWORD: postgres
       RAILS_ENV: development
       AUTH_SERVICE_URL: http://auth_service:3001
+      REDIS_URL: redis://redis:6379/0
     ports:
       - '3000:3000'
     depends_on:
       - postgres
+      - redis
       - auth_service
+    volumes:
+      - ./manager:/app
+
+  manager_worker:
+    build: ./manager
+    command: bash -lc "bundle exec sidekiq"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      RAILS_ENV: development
+      AUTH_SERVICE_URL: http://auth_service:3001
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
     volumes:
       - ./manager:/app
   

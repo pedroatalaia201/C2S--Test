@@ -1,4 +1,18 @@
 class TasksController < ApplicationController
+  before_action :set_task, only: %i[show]
+
+  def index
+    render json: Task.where(created_by_user_id: @current_user['id']), status: :ok
+  end
+
+  def show
+    if @task.created_by_user_id.to_i == @current_user['id'].to_i
+      render json: @task, status: :ok
+    else
+      render json: { error: 'User not authorized' }, status: :unauthorized
+    end
+  end
+
   def create
     task = Task.new(
       **task_params.merge(
@@ -8,7 +22,8 @@ class TasksController < ApplicationController
 
     if task.save
       # Sent even for notification
-      # Start the Worker here.
+      WebScrapingJob.perform_async(task.id)
+
       render json: { message: 'processing' }, status: :ok
     else
       render json: { error: task.errors.full_messages }, status: :unprocessable_entity
@@ -16,6 +31,10 @@ class TasksController < ApplicationController
   end
 
   private
+
+  def set_task
+    @task = Task.find(params[:id])
+  end
 
   def task_params
     params.permit(:title, :original_url)
