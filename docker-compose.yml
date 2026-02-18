@@ -71,6 +71,25 @@ services:
       - postgres
     volumes:
       - ./auth_service:/app
+  
+  # It'll have the port 3002
+  notification_service:
+    build: ./notification_service
+    command: ["bash", "-lc", "bundle exec rails db:create db:migrate && bundle exec rails s -b 0.0.0.0 -p 3002"]
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      RAILS_ENV: development
+    ports:
+      - '3002:3002'
+    depends_on:
+      - 'postgres'
+      - 'manager'
+      - 'manager_worker'
+    volumes:
+      - ./notification_service:/app
 
 volumes:
   postgres_data:
