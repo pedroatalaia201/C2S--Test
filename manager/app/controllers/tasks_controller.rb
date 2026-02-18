@@ -33,6 +33,14 @@ class TasksController < ApplicationController
     end
   end
 
+  def destroy
+    if task.created_by_user_id.to_i == @current_user['id'].to_i
+      @task.destroy
+    else
+      render json: { error: 'User not authorized' }, status: :unauthorized
+    end
+  end
+
   private
 
   def set_task
