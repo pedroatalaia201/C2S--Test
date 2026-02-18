@@ -20,6 +20,11 @@ gem 'redis', '~> 4.0'
 
 # Simple, efficient background processing for Ruby
 gem 'sidekiq', '5.2.10'
+
+# It'll be used for WebScraping
+gem 'net-http'
+gem 'nokogiri'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
