@@ -28,6 +28,7 @@ services:
       DB_PASSWORD: postgres
       RAILS_ENV: development
       AUTH_SERVICE_URL: http://auth_service:3001
+      NOTIFICATION_SERVICE_URL: http://notification_service:3002
       REDIS_URL: redis://redis:6379/0
     ports:
       - '3000:3000'
@@ -48,6 +49,7 @@ services:
       DB_PASSWORD: postgres
       RAILS_ENV: development
       AUTH_SERVICE_URL: http://auth_service:3001
+      NOTIFICATION_SERVICE_URL: http://notification_service:3002
       REDIS_URL: redis://redis:6379/0
     depends_on:
       - postgres

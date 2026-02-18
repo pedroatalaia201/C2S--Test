@@ -14,7 +14,9 @@ class WebScrapingJob
       data = prepare_web_scraping(url: task.original_url)
 
       task.update(status: 'done', collected_data: data)
+      notify_completed_task(task: task, collected_data: data)
     rescue StandardError => e
+      notify_failed_task(task: task)
       task.update(status: 'failed', error_message: e)
     end
   end
@@ -44,5 +46,19 @@ class WebScrapingJob
       car_model: parsed_body[:Specification][:Model][:Value],
       car_price: parsed_body[:Prices][:Price]
     }
+  end
+
+  def notify_completed_task(task:, collected_data:)
+    NotificationServiceClient.new.create(
+      task_id: task.id, event_type: 'task_completed', collected_data: collected_data,
+      user_id: task.created_by_user_id, user_email: task.created_by_user_email
+    )
+  end
+
+  def notify_failed_task(task:)
+    NotificationServiceClient.new.create(
+      task_id: task.id, event_type: 'task_failed', collected_data: nil,
+      user_id: task.created_by_user_id, user_email: task.created_by_user_email
+    )
   end
 end

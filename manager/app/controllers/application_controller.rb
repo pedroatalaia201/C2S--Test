@@ -1,9 +1,6 @@
 class ApplicationController < ActionController::API
   before_action :authenticate!
 
-  # Don't if this will be needed yet...
-  # attr_reader :current_user
-
   private
 
   def authenticate!

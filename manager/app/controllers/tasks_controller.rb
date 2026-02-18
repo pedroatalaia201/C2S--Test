@@ -21,7 +21,10 @@ class TasksController < ApplicationController
     )
 
     if task.save
-      # Sent even for notification
+      NotificationServiceClient.new.create(
+        task_id: task.id, event_type: 'task_created', collected_data: nil,
+        user_id: @current_user['id'], user_email: @current_user['email']
+      )
       WebScrapingJob.perform_async(task.id)
 
       render json: { message: 'processing' }, status: :ok
